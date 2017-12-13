@@ -1,1 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+
+body {
+margin:0;
+}
+
+
+
+
+.mat-datepicker-content .mat-calendar {
+  width:170px  !important;
+  height:50%  !important;
+}
