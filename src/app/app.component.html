@@ -1,7 +1,7 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <mat-toolbar color="primary" class="mat-elevation-z6"> My App</mat-toolbar>
 <div class="float-form">
-  <mat-card>
+  <mat-card style="text-align:center">
    <div class="form-group">
       <mat-form-field class="form-group-input">
           <input matInput [(ngModel)]="fromDate" [matDatepicker]="datefrom" placeholder="Start Date">
@@ -20,8 +20,11 @@
                 </mat-option>
               </mat-select>
             </mat-form-field>
+            <button (click)="chart.loadChartData()" mat-raised-button color="primary">Get Data</button>
    </div>
 
   </mat-card>
 </div>
-
+<mat-card style="width:63%;margin:auto">
+<app-chart #chart [county]="selectedCounty" [fromDate] = "fromDate" [toDate]="toDate"></app-chart>
+</mat-card>

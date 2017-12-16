@@ -1,0 +1,108 @@
+import { Component, OnInit, ElementRef } from '@angular/core';
+import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
+import { ViewChild } from '@angular/core';
+import { Http, Response } from '@angular/http';
+import { Observable } from 'rxjs/Observable';
+import { HttpClient } from '@angular/common/http';
+import { OnChanges } from '@angular/core';
+import 'rxjs/add/operator/map';
+import { SimpleChanges } from '@angular/core';
+
+
+class DataSet {
+  labels: Array<string>;
+  data: Array<number>;
+  backgroundColor: Array<any>;
+  borderColor: Array<any>;
+  borderWidth: number;
+}
+
+
+
+interface ChartData {
+  key: string;
+  value: number;
+};
+
+@Component({
+  selector: 'app-chart',
+  templateUrl: './chart.component.html',
+  styleUrls: ['./chart.component.css']
+})
+export class ChartComponent implements OnInit {
+  public chartType: string = 'bar';
+  public dataSet: Array<DataSet>;
+  public options: any;
+  public legend: string;
+  private data: ChartData[];
+  private chartData: Array<number> = [];
+
+  private labels = ["IM", "GL", "CH", "FP", "ST", "BC", "CO"];
+
+  constructor(private http: HttpClient) {
+    this.dataSet = [];
+    let myDataSet = new DataSet();
+    myDataSet.data = [];
+   myDataSet.backgroundColor = [
+      'rgba(255, 99, 132, 1.0)',
+      'rgba(54, 162, 235, 1.0)',
+      'rgba(255, 206, 86, 1.0)',
+      'rgba(75, 192, 192, 1.0)',
+      'rgba(153, 102, 255,1.02)',
+      'rgba(255, 159, 64, 1.0)',
+      'rgba(128, 0, 0, 1.0)'
+    ];
+    myDataSet.borderColor =  [
+      'rgba(255,99,132,1)',
+      'rgba(54, 162, 235, 1)',
+      'rgba(255, 206, 86, 1)',
+      'rgba(75, 192, 192, 1)',
+      'rgba(153, 102, 255, 1)',
+      'rgba(255, 159, 64, 1)',
+      'rgba(128, 0, 0, 1)'
+    ];
+    myDataSet.borderWidth = 1;
+    this.dataSet.push(myDataSet);
+    this.options = {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    };
+    this.loadChartData();
+  }
+
+
+
+  loadChartData() {
+    let data: Array<ChartData>;
+    this.http.get('https://localhost:44303/encounters/getsignedclosedencounters').subscribe(result => {
+      data = result['data'];
+      this.labels.forEach(label => {
+        let found: ChartData = data.find(elem => elem.key === label);
+
+        if (found) {
+          console.log(found + "found");
+          this.dataSet[0].data.push(found.value);
+       }
+      });
+      console.log(this.dataSet[0].data);
+      let clone = JSON.parse(JSON.stringify(this.dataSet));
+      clone[0].data = clone[0].data;
+      console.log(clone);
+      this.dataSet = clone;
+    });
+   }
+
+    onChartClick(event) {
+      console.log(event);
+    }
+
+  ngOnInit() {
+
+  }
+
+}

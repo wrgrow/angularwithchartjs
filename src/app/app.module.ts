@@ -1,4 +1,5 @@
 import '../polyfills';
+import { HttpClientModule } from '@angular/common/http';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -43,6 +44,7 @@ import {CdkTableModule} from '@angular/cdk/table';
 
 
 import { AppComponent } from './app.component';
+import { ChartComponent } from './chart/chart.component';
 
 
 @NgModule({
@@ -81,10 +83,12 @@ import { AppComponent } from './app.component';
     MatTooltipModule,
   ],
   declarations: [
+    ChartComponent,
     AppComponent
   ],
 
   imports: [
+    HttpClientModule,
     CdkTableModule,
     MatAutocompleteModule,
     MatButtonModule,
