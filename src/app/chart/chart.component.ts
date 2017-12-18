@@ -32,7 +32,8 @@ export class ChartComponent implements OnInit, AfterViewInit {
   public testing: string;
   private data: ChartData[];
   private chartData: number[] = [];
-  private labels = ['IM', 'GL', 'CH', 'FP', 'ST', 'BC', 'CO'];
+  // private labels = ['IM', 'GL', 'CH', 'FP', 'ST', 'BC', 'CO'];
+  private filterData = ['WI'];
 
   @Input()
   public county: string;
@@ -50,7 +51,8 @@ export class ChartComponent implements OnInit, AfterViewInit {
     let day: string;
     let year: string;
     month = (aDate.getMonth() + 1).toString();
-    day = aDate.getDate().toString();
+
+    day = aDate.getDate() < 10 ? "0" + aDate.getDate().toString() : aDate.getDate().toString();
     year = aDate.getFullYear().toString();
     return month + day + year;
 
@@ -64,25 +66,33 @@ export class ChartComponent implements OnInit, AfterViewInit {
     let queryStr = '?' + 'county=' + this.county + '&fromDate=' + this.getDateStr(this.fromDate);
     queryStr = queryStr + '&toDate=' + this.getDateStr(this.toDate);
     const urlandquery = fullUrl + queryStr;
+    const datasetData: Array<number> = [];
+    const labels: Array<string> = [];
+
     this.chartData = [];
 
-
+    const sortChartObjects = function (a: ChartData, b: ChartData) {
+      if (a.key.toString().toLowerCase() > b.key.toString().toLowerCase()) {
+        return 1;
+      } else if (a.key.toString().toLowerCase() < b.key.toString().toLowerCase()) {
+        return -1;
+      } else {
+        return 0;
+      }
+    };
     this.http.get(urlandquery).subscribe(data => {
       this.data = data['data'];
-      console.log(data);
-      this.labels.forEach(label => {
-        let found: ChartData = this.data.find(elem => elem.key == label);
-
-        if (found) {
-
-        this.chartData.push(found.value);
-       }
-      });
-
-      this.chartObj.data.datasets[0].data = this.chartData;
+      this.data.sort(sortChartObjects);
+      for (let i = 0; i < this.data.length; i++) {
+        if (! this.filterData.includes(this.data[i].key)) {
+          labels.push(this.data[i].key);
+          datasetData.push(this.data[i].value);
+         }
+      }
+      this.chartObj.data.labels = labels;
+      this.chartObj.data.datasets[0].data = datasetData;
+      console.log(this.chartObj);
       this.chartObj.update();
-
-
     });
    }
 
@@ -98,11 +108,17 @@ export class ChartComponent implements OnInit, AfterViewInit {
     this.chartObj = new Chart( ctx, {
       type: 'bar',
       data: {
-          labels: this.labels,
+         // labels: this.labels,
           datasets: [{
               label: 'Closed Encounter Count',
              // data: this.chartData,
-              backgroundColor: [
+            backgroundColor: [
+              'rgba(153,0,0,1)',
+              'rgba(96,96,96,1)',
+              'rgba(0,153,76,1)',
+              'rgba(0,153,153,1)',
+              'rgba(0,76,153,1)',
+              'rgba(0,0,0,1)',
                   'rgba(255, 99, 132, 1.0)',
                   'rgba(54, 162, 235, 1.0)',
                   'rgba(255, 206, 86, 1.0)',
@@ -111,7 +127,13 @@ export class ChartComponent implements OnInit, AfterViewInit {
                   'rgba(255, 159, 64, 1.0)',
           'rgba(128, 0, 0, 1.0)'
               ],
-              borderColor: [
+            borderColor: [
+              'rgba(153,0,0,1)',
+              'rgba(96,96,96,1)',
+              'rgba(0,153,76,1)',
+              'rgba(0,153,153,1)',
+              'rgba(0,76,153,1)',
+              'rgba(0,0,0,1)',
                   'rgba(255,99,132,1)',
                   'rgba(54, 162, 235, 1)',
                   'rgba(255, 206, 86, 1)',

@@ -4,7 +4,8 @@ import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {NgModule} from '@angular/core';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup , FormBuilder} from '@angular/forms';
 import {
   MatAutocompleteModule,
   MatButtonModule,
@@ -45,6 +46,7 @@ import {CdkTableModule} from '@angular/cdk/table';
 
 import { AppComponent } from './app.component';
 import { ChartComponent } from './chart/chart.component';
+
 
 
 @NgModule({
@@ -88,6 +90,7 @@ import { ChartComponent } from './chart/chart.component';
   ],
 
   imports: [
+
     HttpClientModule,
     CdkTableModule,
     MatAutocompleteModule,

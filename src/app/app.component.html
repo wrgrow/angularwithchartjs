@@ -1,30 +1,39 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <mat-toolbar color="primary" class="mat-elevation-z6"> My App</mat-toolbar>
+<div style="color:red;text-align:center" *ngIf="checkDates()">Start Date <= Stop Date and Difference <= 30 Days</div>
 <div class="float-form">
   <mat-card style="text-align:center">
-   <div class="form-group">
+
+    <div [formGroup]="dateFormGroup" style="display:inline-block">
+      <mat-form-field>
+        <input matInput [matDatepicker]="datefrom" placeholder="Start Date" [errorStateMatcher]="matcher" name="fromDateFormControl"
+          formControlName="fromDateFormControl" [(ngModel)]="fromDate">
+        <mat-error>Start Date Required Must Be Less Than To Date</mat-error>
+        <mat-datepicker-toggle matSuffix [for]="datefrom"></mat-datepicker-toggle>
+        <mat-datepicker #datefrom></mat-datepicker>
+      </mat-form-field>
+
       <mat-form-field class="form-group-input">
-          <input matInput [(ngModel)]="fromDate" [matDatepicker]="datefrom" placeholder="Start Date">
-          <mat-datepicker-toggle matSuffix [for]="datefrom"></mat-datepicker-toggle>
-          <mat-datepicker #datefrom></mat-datepicker>
-        </mat-form-field>
-        <mat-form-field class="form-group-input">
-            <input matInput  [(ngModel)]="toDate"  matTextareaAutosize matAutosizeMaxRows="2" [(value)]="toDate" [matDatepicker]="dateto" placeholder="Stop Date">
-            <mat-datepicker-toggle matSuffix [for]="dateto"></mat-datepicker-toggle>
-            <mat-datepicker #dateto></mat-datepicker>
-          </mat-form-field>
-          <mat-form-field>
-              <mat-select [(value)]="selectedCounty" placeholder="County">
-                <mat-option *ngFor="let county of counties" [value]="county.value">
-                  {{ county.viewValue }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-            <button (click)="chart.loadChartData()" mat-raised-button color="primary">Get Data</button>
-   </div>
+        <input matInput matTextareaAutosize matAutosizeMaxRows="2" [matDatepicker]="dateto" placeholder="Stop Date" name="toDateFormControl"
+          formControlName="toDateFormControl" [(ngModel)]="toDate">
+        <mat-error>Stop Date Required Must Be Greater Than Start Date</mat-error>
+        <mat-datepicker-toggle matSuffix [for]="dateto"></mat-datepicker-toggle>
+        <mat-datepicker #dateto></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <mat-form-field>
+      <mat-select [(value)]="selectedCounty" placeholder="select county" [formControl]="countyFormControl" [errorStateMatcher]="matcher">
+        <mat-option *ngFor="let county of counties" [value]="county.value">
+          {{ county.viewValue }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button [disabled]="!isValid()" (click)="chart.loadChartData()" mat-raised-button color="primary">Get Data</button>
+<button (click)="logData()" mat-raised-button color="primary">logData</button>
 
   </mat-card>
 </div>
 <mat-card style="width:63%;margin:auto">
-<app-chart #chart [county]="selectedCounty" [fromDate] = "fromDate" [toDate]="toDate"></app-chart>
+  <app-chart #chart [county]="selectedCounty" [fromDate]="fromDate" [toDate]="toDate"></app-chart>
 </mat-card>
