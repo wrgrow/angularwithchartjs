@@ -25,7 +25,7 @@ export class AppComponent implements OnInit {
 
   counties = [
     { value: 'lowndes', viewValue: 'Lowndes' },
-    { value: 'tift', viewValue: 'Tift' },
+    { value: 'lanier', viewValue: 'Lanier' },
     { value: 'brooks', viewValue: 'Brooks' }
   ];
 
@@ -80,6 +80,6 @@ ngOnInit() {
   logData() {
     console.log(this.selectedCounty + " is selectedCounty");
     console.log(this.fromDate + " is fromDate");
-    console.log(this.toDate + " is to Date";)
+    console.log(this.toDate + " is to Date");
 }
 }
