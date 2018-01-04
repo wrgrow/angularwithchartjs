@@ -1,3 +1,11 @@
 .float-form {
 margin:5px;
 }
+.chart {
+width:80% !important;
+margin:auto;
+}
+.nav {
+  background-color:rgb(34, 12, 235);
+  margin:4px;
+}

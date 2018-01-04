@@ -1,10 +1,12 @@
-import { Component, OnInit, ElementRef, Input } from '@angular/core';
+import { Component, OnInit, ElementRef, Input, OnDestroy } from '@angular/core';
 import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
 import { ViewChild } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { HttpClient } from '@angular/common/http';
 import 'rxjs/add/operator/map';
+import { DataCommunicatorService } from '../data-options/data-communicator.service';
+import { Subscription } from 'rxjs/Subscription';
 
 declare var Chart: any;
 
@@ -18,7 +20,7 @@ interface ChartData {
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.css']
 })
-export class ChartComponent implements OnInit, AfterViewInit {
+export class ChartComponent implements OnInit, AfterViewInit , OnDestroy {
   @ViewChild('hardWay') hardWay: ElementRef;
 
   chartObj: any;
@@ -29,11 +31,10 @@ export class ChartComponent implements OnInit, AfterViewInit {
   // private labels = ['IM', 'GL', 'CH', 'FP', 'ST', 'BC', 'CO'];
   private filterData = ['WI'];
   private max: number;
-  @Input() public county: string;
-  @Input() public fromDate: Date;
-  @Input() public toDate: Date;
+  private eventSubscription: Subscription;
+  private  fullUrl = 'http://localhost:4652/encounters/getsignedclosedencounters';
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private dataCommunicatorService: DataCommunicatorService) {
     // this.loadChartData();
   }
 
@@ -49,13 +50,16 @@ export class ChartComponent implements OnInit, AfterViewInit {
   }
 
   testData() {
-    console.log(this.county + '  ' + this.fromDate + ' ' + this.toDate);
+
   }
+
   loadChartData() {
-    const fullUrl = 'http://localhost:4652/encounters/getsignedclosedencounters';
-    let queryStr = '?' + 'county=' + this.county + '&fromDate=' + this.getDateStr(this.fromDate);
-    queryStr = queryStr + '&toDate=' + this.getDateStr(this.toDate);
-    const urlandquery = fullUrl + queryStr;
+    let urlRequest = '';
+    urlRequest += this.fullUrl;
+    urlRequest += '?' + 'county=' + this.dataCommunicatorService.county;
+    urlRequest += '&fromDate=' + this.getDateStr(this.dataCommunicatorService.fromDate);
+    urlRequest += '&toDate=' + this.getDateStr(this.dataCommunicatorService.toDate);
+
     const datasetData: Array<number> = [];
     const labels: Array<string> = [];
 
@@ -70,7 +74,7 @@ export class ChartComponent implements OnInit, AfterViewInit {
         return 0;
       }
     };
-    this.http.get(urlandquery).subscribe(data => {
+    this.http.get(urlRequest).subscribe(data => {
       this.data = data['data'];
       this.data.sort(sortChartObjects);
       let max = 0;
@@ -98,11 +102,21 @@ export class ChartComponent implements OnInit, AfterViewInit {
     console.log(event);
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+   this.eventSubscription =  this.dataCommunicatorService.clicked.subscribe(() => {
+      console.log('data communicator was called');
+      if (this.dataCommunicatorService.county &&
+        this.dataCommunicatorService.fromDate
+        && this.dataCommunicatorService.toDate) {
+        this.loadChartData();
+      }
+    });
+  }
+  ngOnDestroy() {
+    this.eventSubscription.unsubscribe();
+  }
   ngAfterViewInit() {
-    let ctx: CanvasRenderingContext2D = (<HTMLCanvasElement>this.hardWay.nativeElement).getContext(
-      '2d'
-    );
+    const ctx: CanvasRenderingContext2D = (<HTMLCanvasElement>this.hardWay.nativeElement).getContext('2d');
     this.chartObj = new Chart(ctx, {
       type: 'bar',
       data: {
@@ -155,8 +169,8 @@ export class ChartComponent implements OnInit, AfterViewInit {
         animation: {
           duration: 1,
           onComplete: function() {
-            let chartInstance = this.chart;
-            let ctx = chartInstance.ctx;
+            const chartInstance = this.chart;
+            const ctx = chartInstance.ctx;
             ctx.font = Chart.helpers.fontString(
               Chart.defaults.global.defaultFontSize,
               Chart.defaults.global.defaultFontStyle,
