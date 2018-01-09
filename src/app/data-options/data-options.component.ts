@@ -8,7 +8,8 @@ import { DataCommunicatorService } from './data-communicator.service';
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
     const isSubmitted = form && form.submitted;
-    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+    // return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+    return !!(control && control.invalid && ( control.touched || isSubmitted));
   }
 }
 
@@ -27,7 +28,14 @@ export class DataOptionsComponent implements OnInit {
   counties = [
     { value: 'lowndes', viewValue: 'Lowndes' },
     { value: 'lanier', viewValue: 'Lanier' },
-    { value: 'brooks', viewValue: 'Brooks' }
+    { value: 'echols', viewValue: 'Echols' },
+    { value: 'brooks', viewValue: 'Brooks' },
+    { value: 'cook', viewValue: 'Cook' },
+    { value: 'tift', viewValue: 'Tift' },
+    { value: 'berrien', viewValue: 'Berrien' },
+    { value: 'irwin', viewValue: 'Irwin' },
+    { value: 'turner', viewValue: 'Turner' },
+    { value: 'benhill', viewValue: 'BenHill' }
   ];
 
 
@@ -41,25 +49,19 @@ export class DataOptionsComponent implements OnInit {
   constructor(private dataCommunicator: DataCommunicatorService) {
 
   }
-  updateValues() {
-    this.dataCommunicator.county = this.selectedCounty;
-    this.dataCommunicator.fromDate = this.fromDate;
-    this.dataCommunicator.toDate = this.toDate;
-  }
+
 
   validateDates(grp: FormGroup) {
-    console.log(grp);
+
     let fromDate: Date;
     let toDate: Date;
     const secondsInADay = 1000 * 60 * 60 * 24;
     let valid = false;
+    if (!grp.dirty) { return null;}
     if (grp.controls['fromDateFormControl'].value && grp.controls['toDateFormControl'].value) {
       fromDate = new Date(grp.controls['fromDateFormControl'].value);
       toDate = new Date(grp.controls['toDateFormControl'].value);
-      console.log(fromDate + ' ' + toDate);
       const dateDiff = toDate.getTime() - fromDate.getTime();
-      console.log('datediff ' + dateDiff);
-      console.log('number of days ' + (Math.round(dateDiff / secondsInADay) <= 30));
       if (dateDiff >= 0 && Math.round(dateDiff / secondsInADay) <= 30) {
         valid = true;
       }
@@ -71,18 +73,18 @@ export class DataOptionsComponent implements OnInit {
     return  this.countyFormControl.valid && this.dateFormGroup.valid;
   }
   checkDates() {
-    if (this.dateFormGroup.get('fromDateFormControl').dirty &&
-      this.dateFormGroup.get('toDateFormControl').dirty &&
+    if (this.dateFormGroup.get('fromDateFormControl').touched &&
+      this.dateFormGroup.get('toDateFormControl').touched &&
       !this.dateFormGroup.valid) {
       return true;
     }
     return false;
   }
   clicked() {
-    //populate the data
-    this.dataCommunicator.fromDate = this.fromDate;
+    // populate the data
+    this.dataCommunicator.setfromDate(this.fromDate);
     this.dataCommunicator.county = this.selectedCounty;
-    this.dataCommunicator.toDate = this.toDate;
+    this.dataCommunicator.setToDate(this.toDate);
     this.dataCommunicator.getData();
 }
 

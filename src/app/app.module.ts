@@ -13,6 +13,8 @@ import { AngmaterialModule } from './angmaterial.module';
 import { DataOptionsComponent } from './data-options/data-options.component';
 import { DataCommunicatorService } from './data-options/data-communicator.service';
 import { AppRoutingModule } from './app-routing.module';
+import { PcmstatusComponent } from './pcmstatus/pcmstatus.component';
+import { PcmDataService } from './pcm-data.service';
 
 
 @NgModule({
@@ -22,7 +24,8 @@ import { AppRoutingModule } from './app-routing.module';
   declarations: [
     ChartComponent,
     AppComponent,
-    DataOptionsComponent
+    DataOptionsComponent,
+    PcmstatusComponent
   ],
   imports: [
     HttpClientModule,

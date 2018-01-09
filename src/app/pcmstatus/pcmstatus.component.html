@@ -1,0 +1,39 @@
+<app-data-options></app-data-options>
+<div  class='table'>
+  <mat-table [dataSource]="matTableDataSource" >
+    <ng-container matColumnDef="ServiceDate">
+      <mat-header-cell *matHeaderCellDef> ServiceDate </mat-header-cell>
+      <mat-cell *matCellDef="let PCMDatum"> {{PCMDatum.ServiceDate}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="Patient">
+      <mat-header-cell *matHeaderCellDef>Patient </mat-header-cell>
+      <mat-cell *matCellDef="let PCMDatum"> {{PCMDatum.Patient}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="ServiceCode">
+      <mat-header-cell *matHeaderCellDef>ServiceCode </mat-header-cell>
+      <mat-cell *matCellDef="let PCMDatum"> {{PCMDatum.ServiceCode}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="NurseName">
+      <mat-header-cell *matHeaderCellDef> NurseName </mat-header-cell>
+      <mat-cell *matCellDef="let PCMDatum"> {{PCMDatum.NurseName}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="BillDate">
+      <mat-header-cell *matHeaderCellDef>BillDate </mat-header-cell>
+      <mat-cell *matCellDef="let PCMDatum"> {{PCMDatum.BillDate}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="BillStatus">
+      <mat-header-cell *matHeaderCellDef> BillStatus </mat-header-cell>
+      <mat-cell *matCellDef="let PCMDatum"> {{PCMDatum.BillStatus}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="LastMessage">
+      <mat-header-cell *matHeaderCellDef>LastMessage </mat-header-cell>
+      <mat-cell *matCellDef="let PCMDatum"> {{PCMDatum.LastMessage}} </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayColumns;"></mat-row>
+  </mat-table>
+  <mat-paginator #paginator
+  [pageSize]="10"
+  [pageSizeOptions]="[5, 10, 20]">
+</mat-paginator>
+</div>

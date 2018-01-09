@@ -32,22 +32,15 @@ export class ChartComponent implements OnInit, AfterViewInit , OnDestroy {
   private filterData = ['WI'];
   private max: number;
   private eventSubscription: Subscription;
-  private  fullUrl = 'http://localhost:4652/encounters/getsignedclosedencounters';
+ // private fullUrl = 'http://localhost:4652/encounters/getsignedclosedencounters';
+  private  fullUrl = 'http://10.205.134.237/getdata/encounters/getsignedclosedencounters';
 
   constructor(private http: HttpClient, private dataCommunicatorService: DataCommunicatorService) {
     // this.loadChartData();
+    this.dataCommunicatorService.reset();
   }
 
-  private getDateStr(aDate: Date) {
-    let month: string;
-    let day: string;
-    let year: string;
-    month = (aDate.getMonth() + 1).toString();
 
-    day = aDate.getDate() < 10 ? '0' + aDate.getDate().toString() : aDate.getDate().toString();
-    year = aDate.getFullYear().toString();
-    return month + day + year;
-  }
 
   testData() {
 
@@ -57,8 +50,8 @@ export class ChartComponent implements OnInit, AfterViewInit , OnDestroy {
     let urlRequest = '';
     urlRequest += this.fullUrl;
     urlRequest += '?' + 'county=' + this.dataCommunicatorService.county;
-    urlRequest += '&fromDate=' + this.getDateStr(this.dataCommunicatorService.fromDate);
-    urlRequest += '&toDate=' + this.getDateStr(this.dataCommunicatorService.toDate);
+    urlRequest += '&fromDate=' + this.dataCommunicatorService.fromDate;
+    urlRequest += '&toDate=' + this.dataCommunicatorService.toDate;
 
     const datasetData: Array<number> = [];
     const labels: Array<string> = [];
@@ -93,7 +86,7 @@ export class ChartComponent implements OnInit, AfterViewInit , OnDestroy {
       this.ngAfterViewInit();
       this.chartObj.data.labels = labels;
       this.chartObj.data.datasets[0].data = datasetData;
-      console.log(this.chartObj);
+
       this.chartObj.update();
     });
   }
@@ -104,7 +97,7 @@ export class ChartComponent implements OnInit, AfterViewInit , OnDestroy {
 
   ngOnInit() {
    this.eventSubscription =  this.dataCommunicatorService.clicked.subscribe(() => {
-      console.log('data communicator was called');
+
       if (this.dataCommunicatorService.county &&
         this.dataCommunicatorService.fromDate
         && this.dataCommunicatorService.toDate) {
