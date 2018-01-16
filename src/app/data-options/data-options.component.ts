@@ -62,7 +62,7 @@ export class DataOptionsComponent implements OnInit {
       fromDate = new Date(grp.controls['fromDateFormControl'].value);
       toDate = new Date(grp.controls['toDateFormControl'].value);
       const dateDiff = toDate.getTime() - fromDate.getTime();
-      if (dateDiff >= 0 && Math.round(dateDiff / secondsInADay) <= 30) {
+      if (dateDiff >= 0 && Math.round(dateDiff / secondsInADay) <= 90) {
         valid = true;
       }
     }
